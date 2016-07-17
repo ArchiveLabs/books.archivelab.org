@@ -1,0 +1,153 @@
+body {
+    margin: 0px;
+    font-family: 'Raleway', sans-serif;
+}
+
+a {
+    color: #A36663;
+}
+
+h1 {
+    font-family: 'Raleway', sans-serif;
+    margin-bottom: 0px;
+}
+
+h1.logo {
+    font-size: 5em;
+    letter-spacing: -10px;
+}
+
+.logo-container {
+    margin-top: 100px;
+    text-align: center;
+}
+
+.green {
+    color: rgb(220, 192, 100);
+//    color: #34a853;
+}
+
+.yellow {
+    color: rgb(228, 154, 75);
+//    color: #fbbc05;
+}
+
+.red {
+    color: rgb(163, 102, 99);
+//    color: #ea4335;
+}
+
+.blue {
+    color: rgb(120, 170, 160);
+//    color: #4285f4;
+}
+
+.topic span{
+    font-size: 1.7em;
+    width: 100px;
+    padding-right: 115px;
+    font-family: 'Raleway', sans-serif;
+    position: relative;
+    top: 80px;
+
+}
+
+button.wbs__searchSubmit {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.2em;
+}
+
+.book {
+    padding: 10px;
+}
+
+.book img {    
+    height: 200px;
+}
+
+.book .cover {
+    float: left;
+    margin-right: 10px;
+}
+
+.book.content {
+    float: left;
+    padding: 20px;
+}
+
+.book h4 {
+    max-width: 650px;
+    max-height: 15px;
+}
+
+.clearfix {
+    clear: both;
+}
+
+
+.wbs__searchbox {
+    border-color: rgb(150, 185, 175);
+}
+
+.wbs__searchSubmit {
+    background-color: rgb(150, 185, 175);
+}
+
+.wbs__searchIcon {
+  background-image:url('/static/images/search.svg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 65px;
+  height: 45px;
+}
+
+.wbs__searchInput {
+    font-size: 1em;
+}
+
+.reader {
+    width: 100%;
+    height: 500px;
+}
+
+header form {
+}
+
+wbs__searchbox {
+    margin: 0px;
+    padding
+}
+
+.wbs__searchIcon {
+    background: #fff;
+    background-image: url('/static/images/search.svg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 50px;
+}
+
+.create_form {
+    padding: 10px;
+    background-color: #eee;
+}
+
+table.admin td {
+    padding: 5px;
+    background-color: #eee;
+}
+
+.col {
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
+    column-count: 2;
+}
+
+#results {
+    width: 750px;
+    margin: 0 auto;
+}
+
+.coming-soon {
+    font-size: .8em;
+    display: block;
+}
