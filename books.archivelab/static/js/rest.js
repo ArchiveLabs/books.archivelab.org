@@ -1,7 +1,7 @@
 var Collection, Book, Sequence, User, search;
 
 (function() {
-    var apiurl = "https://books.archivelab.org";
+    var apiurl = "https://api.archivelab.org/search/books";
 
     var requests = {
 	get: function(url, callback, options) {
@@ -35,36 +35,8 @@ var Collection, Book, Sequence, User, search;
     };
 
     search = function(query, callback) {
-	var url = apiurl + '/search?q=' + query;
+	var url = apiurl + '?text=' + query + '&fields=names,ids';
 	requests.get(url, callback);
     }
-
-    User = function(id) {
-	this.email = email;
-    }
-
-    User.prototype = {
-	get: function(id, callback) {
-	    var url = apiurl + '/artists/' + this.id;
-	    requests.get(url, callback);
-	},
-
-	//  login: function(email, password, callback) { }
-
-    };
-
-    Book = {
-	create: function(data, callback) {
-	    var url = apiurl + '/b';
-	    requests.post(url, data, callback);	
-	}
-    };
-
-    Author = {
-	create: function(data, callback) {
-	    var url = apiurl + '/a';
-	    requests.post(url, data, callback);	
-	}
-    };
 
 }());

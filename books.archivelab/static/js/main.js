@@ -23,66 +23,17 @@ var Collection, Book, Sequence, User, search;
     
     var renderResults = function(results) {
 	console.log(results);
-
-	// $('#results').append('<div id="collections"><ul></ul></div>');
-
-	for (var b in results.books) {
-	    var book = results.books[b];
-	    
-	    // for (var c in book.collections) {
-	    //   collection = book.collections[c];
-	    //   $('#collections ul').append('<li>' + collection + '</li>');
-	    // }
-
+	for (var archive_id in results) {
+	    var key = archive_id;
+	    var title = results[archive_id];
 	    $('#results').append(
 		'<div class="book">' + 
-		    '<h4><a href="/b/' + book.archive_id + '#'
-		    + book.id + '">' + shrink(book.name) + '</a></h4>' + 
-		    '<div class="cover">' +
-  		      '<a href="/b/' + book.archive_id + '">' +		    
-  		        '<img src="' + book.cover_url + '"/>' +
-		      '</a>' + 
-		    '</div>' +
-		    '<div class="content">' +
-		      '<p><a href="/b/' + book.id  + '"></a></p>' +
-		      '<span>' + listify(book.authors) + '</span>' + 
-		      '<p>' + book.data.description + '</p>' +
-		      '<div class="coming-soon">' +
-		        //'<p>In collection(s): ' + book.collections + '</p>' +
-		        //'<p>In sequences(s) -- show to right:</p>' +
-		        //'<p>People read this before:</p>' +
-		        //'<p>This book unlocks:</p>' +
-  		        //'<p>Book highlights:</p>' +
-		      '</div>' +
-		    '</div>' +
-		'</div>'
+		    '<a href="https://archive.org/details/' + archive_id + '">' + 
+		    title + '</a>' +
+	    '</div>'
 	    );
+	}
 	$('#results').append('<div class="clearfix"></div>');
-	}
-
-	/*
-	if (results.collections) {
-	    $('#results').append('<h2>Collections</h2>');
-	    for (var c in results.collections) {
-		var co = results.collections[c];
-		$('#results').append(
-		    '<div class="collection">' + co.name + '</div>'
-		);
-	    }
-	    $('#results').append('<div class="clearfix"></div>');
-	}
-
-	if (results.sequences) {
-	    $('#results').append('<h2>Sequences</h2>');
-	    for (var s in results.sequences) {
-		var seq = results.sequences[s];
-		$('#results').append(
-		    '<div class="sequence">' + seq.name + '</div>'
-		);
-	    }
-	    $('#results').append('<div class="clearfix"></div>');
-	}
-	*/
     }    
 
 
@@ -158,12 +109,7 @@ var Collection, Book, Sequence, User, search;
 	search(query, function(results) {
 	    $('#results').empty();
 	    redux.last_search = query;
-	    if (results.books.length || results.authors.length ||
-		results.collections.length || results.sequences.length) {
-		renderResults(results);
-	    } else {
-		$('#results').append(no_results);
-	    }
+	    renderResults(results);
 	});
     }
 
