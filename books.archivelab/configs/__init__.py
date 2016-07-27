@@ -31,7 +31,7 @@ config.read('%s/settings.cfg' % path)
 config.getdef = types.MethodType(getdef, config)
 
 HOST = config.getdef("server", "host", '0.0.0.0')
-PORT = int(config.getdef("server", "port", 8080))
+PORT = int(config.getdef("server", "port", 9999))
 DEBUG = bool(int(config.getdef("server", "debug", 1)))
 SECRET_KEY = config.getdef("sessions", "secret", "")
 options = {

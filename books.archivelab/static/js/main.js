@@ -20,21 +20,26 @@ var Collection, Book, Sequence, User, search;
 	}
 	return res.join(', ');
     }
-    
+
     var renderResults = function(results) {
 	console.log(results);
 	for (var archive_id in results) {
 	    var key = archive_id;
-	    var title = results[archive_id];
+	    var title = results[archive_id].name;
+	    var hits = results[archive_id].hits;
 	    $('#results').append(
-		'<div class="book">' + 
-		    '<a href="https://archive.org/details/' + archive_id + '">' + 
+		'<div class="book">' +
+            '<img src="https://archive.org/services/img/' + archive_id + '">' +
+		    '<a href="https://archive.org/details/' + archive_id + '">' +
 		    title + '</a>' +
+	      	'<div>' +
+		highlight(hits) +
+		'</div>' +
 	    '</div>'
 	    );
 	}
 	$('#results').append('<div class="clearfix"></div>');
-    }    
+    }
 
 
     var debounce = function (func, threshold, execAsap) {
@@ -46,12 +51,12 @@ var Collection, Book, Sequence, User, search;
 		    func.apply(obj, args);
 		timeout = null;
 	    };
-	    
+
 	    if (timeout)
 		clearTimeout(timeout);
 	    else if (execAsap)
 		func.apply(obj, args);
-	    
+
 	    timeout = setTimeout(delayed, threshold || 100);
 	};
     }
@@ -73,12 +78,9 @@ var Collection, Book, Sequence, User, search;
 	}
     }
 
-    var no_results = '<div>' + 
-	'<p>' + 
-	'No results found. Want to <a href="/map">explore a map</a> ' +
-	'of all available categories?</p><p>If the book you\'re ' + 
-	'looking for is on Archive.org, you can add it using ' + 
-	'<a href="/admin">this form</a>!' +
+    var no_results = '<div>' +
+	'<p>' +
+	'No results found.' 
 	'</p>' +
 	'</div>';
 
@@ -88,7 +90,7 @@ var Collection, Book, Sequence, User, search;
 	var this_search = $('.wbs__searchInput').val()
 	change_url(this_search);
 	if (jQuery.trim(this_search) === "") {
-	    $('#results').empty();	    
+	    $('#results').empty();
 	    $('#results').append(no_results);
 	} else if (redux.last_search != this_search && jQuery.trim(this_search) !== "") {
 	    _search(this_search);
@@ -122,6 +124,26 @@ var Collection, Book, Sequence, User, search;
 	});
 	return result;
     }
+
+var highlight = function(matches) {
+    var results = '<ul>';
+    for (i in matches) {
+        var match = matches[i];
+        while(match.indexOf('{{{') > -1) {
+        match = match.replace('{{{', '<span style="font-weight: bold;">');
+        match = match.replace('}}}', '</span>')
+        }
+        results += '<li>' + match + '</li>';
+    }
+    results += '</ul>';
+    if (results !== '<ul></ul>') {
+        return '<div class="matched-region" style="font-size: .9em;" >' +
+        'Fulltext matches:' + results +
+         '</div>';
+    } else {
+        return '';
+    }
+   }
 
     /* Parse GET parameters */
     var options = getJsonFromUrl();

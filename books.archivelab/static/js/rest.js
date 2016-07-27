@@ -35,7 +35,7 @@ var Collection, Book, Sequence, User, search;
     };
 
     search = function(query, callback) {
-	var url = apiurl + '?text=' + query + '&fields=names,ids';
+	var url = apiurl + '?text=' + query + '&fields=names,ids,hits';
 	requests.get(url, callback);
     }
 

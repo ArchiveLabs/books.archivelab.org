@@ -1,9 +1,11 @@
 # books.archivelab.org
 
-To be split into api.books.archivelab.org and books.archivelab.org
+Standalone UI application for searching 1M+ archive.org books
 
-## Endpoints
 
-POST https://books.archivelab.org/b
+## Author
+Michael E. Karpeles <mek@archive.org>
 
-POST https://books.archivelab.org/a
+
+### Mantainer
+Giovanni Damiola <giovanni@archive.org>
