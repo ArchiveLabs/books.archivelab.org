@@ -46,7 +46,13 @@
 	  <td><a href="/a/{{author.id}}">{{author.name}}</a></td>
 	  <td>{{author.olid}}</td>
 	  <td>{{author.names}}</td>
-	  <td>{{author.books}}</td>
+	  <td>
+	    {% for book in author.books %}
+	    <ul>
+	      <li><a href="b/{{book.archive_id}}#{{book.id}}">({{book.id}}) {{book.name}} </a></li>
+	    </ul>
+	    {% endfor %}
+	  </td>
 	</tr>
 	{% endfor %}
     </table>
@@ -56,6 +62,7 @@
     <form action="/b" method="POST" class="create_form" id="book_form">
       <input type="text" name="archive_id" placeholder="Archive.org ID"/>
       <input type="text" name="aids" placeholder="Author IDs (csv)"/>
+      <input type="text" name="cids" placeholder="Collection IDs (csv)"/>
       <input type="submit"/>
     </form>
 
@@ -67,20 +74,29 @@
 	  <th>Name</th>
 	  <th>Archive.org IDs</th>
 	  <th>Authors</th>
+	  <th>Description</th>
 	  <th>Collections</th>
 	  <th>Sequences</th>
+	  <th></th>
 	</tr>
       </thead>
       <tbody>
 	{% for book in books %}
 	<tr>
 	  <td>{{book.id}}</td>
-	  <td><img src="{{book.cover_url}}"/></td>
+	  <td><a href="/b/{{book.archive_id}}"><img src="{{book.cover_url}}"/></a></td>
 	  <td>{{book.name}}</td>
 	  <td>{{book.archive_id}}</td>
 	  <td>{{book.authors}}</td>
+	  <td>{{book.data.description}}</td>
 	  <td>{{book.collections}}</td>
 	  <td>{{book.sequences}}</td>
+	  <td>
+	    <form method="post" action="/b/{{book.archive_id}}">
+	      <input type="hidden" name="method" value="delete" />
+	      <input type="submit" value="X"/>
+	    </form>
+	  </td>
 	</tr>
 	{% endfor %}
     </table>

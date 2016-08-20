@@ -7,8 +7,8 @@ var Collection, Book, Sequence, User, search;
     };
 
     var shrink = function(s) {
-	if (s.length > 75) {
-	    return s.slice(0, 75) + ' ...';
+	if (s.length > 65) {
+	    return s.slice(0, 65) + ' ...';
 	}
 	return s
     }
@@ -16,11 +16,31 @@ var Collection, Book, Sequence, User, search;
     var listify = function(authors) {
 	var res = [];
 	for (a in authors) {
-	    res.push(['<a href="/a/' + authors[a].id +  '">' + authors[a].name + '</a>']);
+	    res.push(['<a class="author-url yellow" href="/a/' + authors[a].id +  '">' + authors[a].name + '</a>']);
 	}
 	return res.join(', ');
     }
     
+    var highlight = function(matches) {
+	var results = '<ul>';
+	for (i in matches) {
+	    var match = matches[i];
+	    while(match.indexOf('{{{') > -1) {
+		match = match.replace('{{{', '<span style="font-weight: bold;">');
+		match = match.replace('}}}', '</span>')
+	    }
+	    results += '<li>' + match + '</li>';
+	}
+	results += '</ul>';
+	if (results !== '<ul></ul>') {
+	    return '<div class="matched-region" style="font-size: .9em;" >' +
+		'Fulltext matches:' + results + 
+  		'</div>';
+	} else {
+	    return '';
+	}
+    }
+
     var renderResults = function(results) {
 	console.log(results);
 
@@ -28,25 +48,37 @@ var Collection, Book, Sequence, User, search;
 
 	for (var b in results.books) {
 	    var book = results.books[b];
-	    
+
 	    // for (var c in book.collections) {
 	    //   collection = book.collections[c];
 	    //   $('#collections ul').append('<li>' + collection + '</li>');
 	    // }
 
+	    // 9 col, 2 cover, 5 desc, 3 fulltext results
+
 	    $('#results').append(
 		'<div class="book">' + 
 		    '<h4><a href="/b/' + book.archive_id + '#'
-		    + book.id + '">' + shrink(book.name) + '</a></h4>' + 
+		    + book.id + '">' + shrink(book.name) + '</a>' +
+		    '</h4>' + 
 		    '<div class="cover">' +
-  		      '<a href="/b/' + book.archive_id + '">' +		    
+  		      '<a href="/b/' + book.archive_id + '">' +
   		        '<img src="' + book.cover_url + '"/>' +
 		      '</a>' + 
 		    '</div>' +
 		    '<div class="content">' +
-		      '<p><a href="/b/' + book.id  + '"></a></p>' +
-		      '<span>' + listify(book.authors) + '</span>' + 
-		      '<p>' + book.data.description + '</p>' +
+		    '<p class="bookurl">' +
+		        '<a href="/b/' + book.archive_id + '#' + book.id  + '">' +
+		          window.location.protocol + '//' + window.location.host + 
+		          '/b/' + book.archive_id + '#' + book.id +
+		        '</a>' +
+		      '</p>' +
+		      '<span>by ' + listify(book.authors) + '</span> - ' +
+		      '<span style="color: #999;">' + book.data.date + '</span>' + 
+		      '<div class="desc">' +
+		      '<p class="description">' + book.data.description + '</p>' +
+		      '</div>' +		
+		        highlight(book.matches) + 
 		      '<div class="coming-soon">' +
 		        //'<p>In collection(s): ' + book.collections + '</p>' +
 		        //'<p>In sequences(s) -- show to right:</p>' +
@@ -114,6 +146,8 @@ var Collection, Book, Sequence, User, search;
     var clear_splash = function() {
 	if (!redux.triggered) {
 	    $('header').remove();
+	    $('#results').css('width', '800px');
+	    $('#results').css('margin', '0px');
 	    $('#content').css('padding', '10px');
 	    $('#content').css('background', '#eee');
 	    $('#content.form').css('border-bottom', '1px solid #ddd');
@@ -142,7 +176,7 @@ var Collection, Book, Sequence, User, search;
 	} else if (redux.last_search != this_search && jQuery.trim(this_search) !== "") {
 	    _search(this_search);
 	}
-    }, 175, false));
+    }, 300, false));
 
 
     var change_url = function(query) {

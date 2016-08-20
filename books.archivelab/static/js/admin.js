@@ -31,7 +31,8 @@ var Collection, Book, Sequence, User, search;
 	event.preventDefault();
 	Book.create({
 	    archive_id: $('#book_form input[name=archive_id]').val(),
-	    aids: $('#book_form input[name=aids]').val()
+	    aids: $('#book_form input[name=aids]').val(),
+	    cids: $('#book_form input[name=cids]').val()
 	}, function(resp) {
 	    location.reload();
 	});

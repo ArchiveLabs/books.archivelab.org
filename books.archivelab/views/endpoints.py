@@ -11,21 +11,10 @@
 
 from flask import render_template, request
 from flask.views import MethodView
-from views import rest, paginate
+from views import rest, paginate, v1
+from sqlalchemy.orm.attributes import flag_modified
 from datetime import datetime
 from api import books as api
-
-
-class Collections(MethodView):
-    @rest
-    def get(self):
-        return {'collections': [c.dict() for c in api.Collection.all()]}
-
-
-class Collection(MethodView):
-    @rest
-    def get(self, cid):
-        return api.Collection.get(cid).dict(books=True, collections=True)
 
 
 class Search(MethodView):
@@ -35,28 +24,8 @@ class Search(MethodView):
         query = request.args.get('q')
         page = request.args.get('page', 0)
         limit = int(request.args.get('limit', 0))
-        if not query:
-            return []        
 
-        books = api.Book.search(query, field="name", limit=50, page=page)
-        authors = api.Author.search(query, field="name", limit=5, page=page)
-        collections = api.Collection.search(query, field="name", limit=20, page=page)
-        sequences = api.Sequence.search(query, field="name", limit=20, page=page)
-        author_names = api.AuthorName.search(query, field="name", limit=5, page=page)
-        if author_names:
-            for author_name in author_names:
-                _author = author_name.author
-                authors.append(_author)
-                print(_author.books)
-                books.extend(_author.books)
-                print(books)
-
-        return {
-            'sequences': [s.dict() for s in sequences],
-            'collections': [c.dict() for c in collections],
-            'books': [b.dict() for b in list(set(books))],
-            'authors': [a.dict() for a in list(set(authors))]
-        }
+        return api.search_all(query, page=page, limit=limit)
 
 
 # The following endpoints should be in their own service -- FE, not API
@@ -96,7 +65,9 @@ class MapJson(MethodView):
 
 class Admin(MethodView):
     def get(self):
-        authors = [a.dict(names=True, books=True) for a in api.Author.all()]
+        authors = sorted([a.dict(names=True, books=True)
+                          for a in api.Author.all()],
+                         key=lambda a: a['id'], reverse=True)
         books = sorted([b.dict() for b in api.Book.all()],
                        key=lambda b: b['id'], reverse=True)
         seqs = [s.dict() for s in api.Sequence.all()]
@@ -133,6 +104,7 @@ class AuthorPage(MethodView):
 
         try:
             a = api.Author.get(name=name)
+            a.olid = olid
         except:
             a = api.Author(name=name, olid=olid)
             a.create()
@@ -166,8 +138,11 @@ class BookPage(MethodView):
             'book.html', book=book, aids=author_ids)
 
     @rest
-    def post(self):
+    def post(self, archive_id=None):
         i = request.form
+        if i.get('method') == "delete" and archive_id:
+            return self.delete(archive_id)
+
         archive_id = i.get('archive_id')
         name = i.get('name')
         desc = i.get('description')
@@ -183,15 +158,32 @@ class BookPage(MethodView):
             author_ids = [a.strip() for a in author_ids.split(',')]
             for aid in author_ids:
                 b.authors.append(api.Author.get(aid))
+
+        collection_ids = i.get('cids')
+        if collection_ids:
+            cids = [int(c.strip()) for c in collection_ids.split(',')]
+            for cid in cids:
+                b.collections.append(api.Collection.get(cid))
+                
         if name:
             b.name = name
+
         if desc:
-            from sqlalchemy.orm.attributes import flag_modified
             b.data[u'description'] = desc
             flag_modified(b, 'data')
+
         b.save()
+
         return b.dict()
-                
+
+    @rest
+    def delete(self, archive_id):
+        i = request.form
+        try:
+            b = api.Book.get(archive_id=archive_id)
+            b.remove()
+        except:
+            return
 
 
 class Endpoints(MethodView):
@@ -205,10 +197,8 @@ class Favicon(MethodView):
 
 
 urls = (
-    '/v1', Endpoints,
+    '/v1', v1,
     '/favicon.ico', Favicon,
-    '/collections/<cid>', Collection,
-    '/collections', Collections,
     '/search', Search,
     '/map.json', MapJson,
     '/map', Map,

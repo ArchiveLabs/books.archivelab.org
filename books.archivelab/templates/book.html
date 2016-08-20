@@ -11,13 +11,11 @@
     <link rel="stylesheet" href="/static/css/style.css" />
   </head>
   <body>
-    
-    <h1>{{book.name}}</h1>
-    
-    <iframe src="https://iiif.archivelab.org/iiif/{{book.archive_id}}" width="800px"
-	    height="550px"></iframe>
+        <iframe src="https://iiif.archivelab.org/iiif/{{book.archive_id}}" width="100%"
+		style="position: fixed; height: 100%; bottom: 0px; top: 0px; right: 0px;"></iframe>
 
-    <form action="/b" method="POST" class="create_form" id="book_form">
+    <form action="/b" method="POST" class="create_form" id="book_form"
+	  style="position: fixed; top: 2px; background-color: black; height: 10px; padding-top: 5px;">
       <input type="text" name="name" value="{{book.name}}" placeholder="Archive.org ID"/>
       <input type="text" name="archive_id" value="{{book.archive_id}}" placeholder="Archive.org ID"/>
       <input type="text" name="aids" value="{{aids}}" placeholder="Author IDs (csv)"/>

@@ -67,4 +67,11 @@ var Collection, Book, Sequence, User, search;
 	}
     };
 
+    Fulltext = {
+	search: function(text, callback) {
+	    var url = 'https://api.archivelab.org/v2/search/books?text="' + data.text + '"';
+	    requests.get(url, callback);
+	}
+    }
+
 }());
