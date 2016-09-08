@@ -23,14 +23,16 @@ var Collection, Book, Sequence, User, search;
 
     var renderResults = function(results) {
 	console.log(results);
-	for (var archive_id in results) {
-	    var key = archive_id;
-	    var title = results[archive_id].name;
-	    var hits = results[archive_id].hits;
+	for (var idx in results.results) {
+	    var result = results.results[idx];
+	    console.log(result);
+	    var key = result.id;
+	    var title = result.name;
+	    var hits = result.hits;
 	    $('#results').append(
 		'<div class="book">' +
-            '<img src="https://archive.org/services/img/' + archive_id + '">' +
-		    '<a href="https://archive.org/details/' + archive_id + '">' +
+            '<img src="https://archive.org/services/img/' + key + '">' +
+		    '<a href="https://archive.org/details/' + key + '">' +
 		    title + '</a>' +
 	      	'<div>' +
 		highlight(hits) +
